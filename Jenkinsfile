@@ -20,27 +20,35 @@ pipeline {
 
         stage('Validación') {
             steps {
+                echo "🔍 Validando estructura del proyecto"
+
+                // Asegurar permisos (CLAVE para Windows → Linux)
+                sh 'chmod +x scripts/test.sh'
+
+                // Validaciones básicas
                 sh 'test -f Dockerfile'
                 sh 'test -f docker-compose.yml'
-                sh 'test -x scripts/test.sh'
                 sh 'test -f app/index.html'
             }
         }
 
-        stage('Tests') {
+        stage('Pruebas') {
             steps {
+                echo "🧪 Ejecutando pruebas automáticas"
                 sh './scripts/test.sh'
             }
         }
 
-        stage('Build Imagen') {
+        stage('Crear Imagen') {
             steps {
+                echo "🐳 Construyendo imagen Docker (staging)"
                 sh 'docker build -t inventario-flores:staging .'
             }
         }
 
-        stage('Deploy Staging') {
+        stage('Implementar Staging') {
             steps {
+                echo "🚀 Desplegando en STAGING"
                 sh 'docker compose up -d inventario-staging'
             }
         }
@@ -53,12 +61,14 @@ pipeline {
 
         stage('Promover Imagen') {
             steps {
+                echo "🏷️ Promoviendo imagen a PRODUCCIÓN"
                 sh 'docker tag inventario-flores:staging inventario-flores:production'
             }
         }
 
-        stage('Deploy Producción') {
+        stage('Implementar Producción') {
             steps {
+                echo "🚀 Desplegando en PRODUCCIÓN"
                 sh 'docker compose up -d inventario-produccion'
             }
         }
