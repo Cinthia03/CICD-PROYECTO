@@ -1,0 +1,116 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #f0fff4, #e6fffa);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    color: #2f855a;
+    margin: 30px 0;
+}
+
+.form-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.form-card h2 {
+    margin-top: 0;
+    color: #276749;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+form label {
+    grid-column: span 2;
+    font-weight: 600;
+}
+
+form input {
+    grid-column: span 2;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+form button {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+form button[type="submit"] {
+    background-color: #38a169;
+    color: white;
+}
+
+form button.cancel {
+    background-color: #e53e3e;
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th {
+    background-color: #38a169;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f0fff4;
+}
+
+.action-btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin: 0 3px;
+    color: white;
+}
+
+.edit {
+    background-color: #3182ce;
+}
+
+.delete {
+    background-color: #e53e3e;
+}
+
+.footer {
+    text-align: center;
+    margin: 20px;
+    color: #555;
+    font-style: italic;
+}
+

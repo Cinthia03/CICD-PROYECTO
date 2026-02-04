@@ -1,0 +1,12 @@
+services:
+  inventario-staging:
+    image: inventario-flores:staging
+    container_name: inventario_flores_staging
+    ports:
+      - "8081:80"
+
+  inventario-produccion:
+    image: inventario-flores:production
+    container_name: inventario_flores_production
+    ports:
+      - "8082:80"
