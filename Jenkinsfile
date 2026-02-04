@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME = "inventario-flores"
+        APP_NAME     = "inventario-flores"
+        STAGING_PORT = "8081"
+        PROD_PORT    = "8082"
     }
 
     options {
@@ -14,21 +16,23 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo "📥 Descargando código del repositorio"
+                checkout scm
+                echo "📥 Código descargado desde el repositorio"
             }
         }
 
-        stage('Validación') {
+        stage('Validación / Lint') {
             steps {
-                echo "🔍 Validando estructura del proyecto"
+                echo "🔍 Validando estructura mínima del proyecto"
 
-                // Asegurar permisos (CLAVE para Windows → Linux)
+                // Asegurar permisos (Windows → Linux)
                 sh 'chmod +x scripts/test.sh'
 
-                // Validaciones básicas
                 sh 'test -f Dockerfile'
                 sh 'test -f docker-compose.yml'
                 sh 'test -f app/index.html'
+
+                echo "✅ Validación completada correctamente"
             }
         }
 
@@ -39,50 +43,54 @@ pipeline {
             }
         }
 
-        stage('Crear Imagen') {
+        stage('Construir Imagen (Staging)') {
             steps {
-                echo "🐳 Construyendo imagen Docker (staging)"
-                sh 'docker build -t inventario-flores:staging .'
+                echo "🐳 Construyendo imagen Docker para STAGING"
+                sh "docker build -t ${APP_NAME}:staging ."
             }
         }
 
-        stage('Implementar Staging') {
+        stage('Desplegar a Staging') {
             steps {
-                echo "🚀 Desplegando en STAGING"
+                echo "🚀 Desplegando aplicación en STAGING (puerto ${STAGING_PORT})"
                 sh 'docker compose up -d inventario-staging'
+                echo "🌐 Staging disponible en: http://IP-VM:${STAGING_PORT}"
             }
         }
 
-        stage('Aprobación Producción') {
+        stage('Aprobación para Producción') {
             steps {
-                input message: '¿Aprobar despliegue a PRODUCCIÓN?'
+                input message: '¿Aprobar despliegue a PRODUCCIÓN?', ok: 'Sí, desplegar'
             }
         }
 
-        stage('Promover Imagen') {
+        stage('Promover Imagen a Producción') {
             steps {
-                echo "🏷️ Promoviendo imagen a PRODUCCIÓN"
-                sh 'docker tag inventario-flores:staging inventario-flores:production'
+                echo "🏷️ Promoviendo imagen de STAGING a PRODUCCIÓN"
+                sh "docker tag ${APP_NAME}:staging ${APP_NAME}:production"
             }
         }
 
-        stage('Implementar Producción') {
+        stage('Desplegar a Producción') {
             steps {
-                echo "🚀 Desplegando en PRODUCCIÓN"
+                echo "🚀 Desplegando aplicación en PRODUCCIÓN (puerto ${PROD_PORT})"
                 sh 'docker compose up -d inventario-produccion'
+                echo "🌐 Producción disponible en: http://IP-VM:${PROD_PORT}"
             }
         }
     }
 
     post {
         success {
-            echo "🎉 CI/CD completado exitosamente"
+            echo "🎉 Flujo CI/CD completado exitosamente"
         }
         failure {
-            echo "❌ El pipeline falló"
+            echo "❌ El flujo CI/CD falló. Revisar logs."
         }
         always {
-            sh 'docker ps || true'
+            sh """
+            docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' || true
+            """
         }
     }
 }
