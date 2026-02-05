@@ -39,7 +39,7 @@
 
   <!-- INVENTARIO -->
   <div id="inventario" class="form-card">
-    <h2>📦 Inventario</h2>
+    <h2 id="form-title">📦 Inventario</h2>
 
     <form id="flower-form">
       <input type="hidden" id="editIndex">
@@ -99,6 +99,14 @@
       </thead>
       <tbody id="sales-table"></tbody>
     </table>
+
+    <h3 style="text-align:right; margin-top:15px;">
+  💰 Total General: <span id="total-general">$0.00</span>
+    </h3>
+
+    <div style="text-align:right; margin-top:10px;">
+      <button onclick="generateSale()">✅ Generar venta</button>
+    </div>
   </div>
 
 </div>
