@@ -1,54 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Inventario de Flores</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Sistema de Gestión de Flores</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body style="min-height:100vh; display:flex; justify-content:center; align-items:center;">
 
-<div class="container">
-    <h1>🌸 Sistema de Inventario de Flores</h1>
+<!-- LOGIN -->
+<div id="login-container" class="form-card" style="width:420px; padding:30px; text-align:center;">
+  <h2>🌸 Iniciar sesión</h2>
 
-    <!-- FORMULARIO -->
-    <div class="form-card">
-        <h2 id="form-title">Agregar flor</h2>
+  <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
+    <label style="text-align:left;">Usuario</label>
+    <input type="text" id="user">
 
-        <form id="flower-form">
-            <input type="hidden" id="editIndex">
+    <label style="text-align:left;">Contraseña</label>
+    <input type="password" id="password">
+  </div>
 
-            <label>Nombre de la flor</label>
-            <input type="text" id="name" required>
+  <div style="margin-top:20px;">
+    <button onclick="login()" style="padding:8px 30px;">Entrar</button>
+  </div>
 
-            <label>Stock</label>
-            <input type="number" id="stock" required min="0">
+  <p id="login-error" style="color:red; margin-top:10px;"></p>
+</div>
 
-            <label>Precio (USD)</label>
-            <input type="number" id="price" required step="0.01" min="0">
+<!-- SISTEMA -->
+<div class="container" id="app" style="display:none; width:100%;">
 
-            <button type="submit">Guardar</button>
-            <button type="button" class="cancel" onclick="resetForm()">Cancelar</button>
-        </form>
+  <h1 style="text-align:center;">🌸 Sistema de Gestión de Flores</h1>
+
+  <!-- PESTAÑAS -->
+  <div style="display:flex; justify-content:center; gap:10px; margin-bottom:25px;">
+    <button class="action-btn edit" onclick="showTab('inventario')">Inventario</button>
+    <button class="action-btn edit" onclick="showTab('ventas')">Ventas</button>
+  </div>
+
+  <!-- INVENTARIO -->
+  <div id="inventario" class="form-card">
+    <h2>📦 Inventario</h2>
+
+    <form id="flower-form">
+      <input type="hidden" id="editIndex">
+
+      <label>Nombre</label>
+      <input type="text" id="name" required>
+
+      <label>Stock</label>
+      <input type="number" id="stock" min="0" required>
+
+      <label>Precio (USD)</label>
+      <input type="number" id="price" step="0.01" min="0" required>
+
+      <button type="submit">Guardar</button>
+      <button type="button" class="cancel" onclick="resetForm()">Cancelar</button>
+    </form>
+
+    <table style="margin-top:20px;">
+      <thead>
+        <tr>
+          <th>Flor</th>
+          <th>Stock</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- VENTAS -->
+  <div id="ventas" class="form-card" style="display:none;">
+    <h2>🛒 Ventas</h2>
+
+    <!-- BUSQUEDA + CANTIDAD -->
+    <div style="display:flex; gap:20px; align-items:center; margin-bottom:15px;">
+      <div>
+        <label>Buscar flor</label>
+        <input type="text" id="search" onkeyup="filterFlowers()">
+      </div>
+
+      <div>
+        <label>Cantidad</label>
+        <input type="number" id="global-qty" min="1" oninput="updateTotals()">
+      </div>
     </div>
 
-    <!-- TABLA -->
     <table>
-        <thead>
-            <tr>
-                <th>Flor</th>
-                <th>Stock</th>
-                <th>Precio</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-        </tbody>
+      <thead>
+        <tr>
+          <th>Flor</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Vender</th>
+          <th>Total a pagar</th>
+        </tr>
+      </thead>
+      <tbody id="sales-table"></tbody>
     </table>
+  </div>
 
-    <p class="footer">Gestión local del inventario (Demo CI/CD)</p>
 </div>
 
 <script src="app.js"></script>
 </body>
 </html>
-
